@@ -42,6 +42,7 @@ class Charting:
     def run(self):
         self.app.run_server(debug=True)
 
+"""
 if __name__ == '__main__':
     portfolio_values = pd.read_pickle('cache/_portfolio_values_1d.pkl')
     chart = Charting(portfolio_values)
@@ -52,5 +53,19 @@ if __name__ == '__main__':
         ['invested_value', 'portfolio_value', 0],
         ['unrealized_profits', 0],
         ['total_gains', 'unrealized_gains', 0]
+    ])
+    chart.run()
+"""
+
+if __name__ == '__main__':
+    portfolio_values = pd.read_pickle('cache/1d_eth_extended_latest.pkl')
+    portfolio_values['datetime'] = portfolio_values.index
+    print(portfolio_values)
+    chart = Charting(portfolio_values)
+    chart.plot_subplots([
+        ['Close', '50_MA', '100_MA', '200_MA'],
+        ['50_MAOSC', '100_MAOSC', '200_MAOSC', 'avg_MAOSC', 20, 50, 80],
+        ['long_MarketCycle', 'med_MarketCycle', 'short_MarketCycle', 'avg_MarketCycle', 20, 50, 80],
+        ['DCO']
     ])
     chart.run()

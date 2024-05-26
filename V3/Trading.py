@@ -58,9 +58,9 @@ class Trading:
         trades_df = trades_df.sort_values(by='datetime')
         trades_df['cum_gains'] = (1 + trades_df['gains'] / 100).cumprod() - 1
 
-        total_trades = len(trades_df)
-        winning_trades = trades_df[trades_df['gains'] > 0]
-        losing_trades = trades_df[trades_df['gains'] <= 0]
+        total_trades = len(trades_df[trades_df['type'] == 'sell'])
+        winning_trades = trades_df[(trades_df['gains'] > 0) & (trades_df['type'] == 'sell')]
+        losing_trades = trades_df[(trades_df['gains'] <= 0) & (trades_df['type'] == 'sell')]
         win_rate = len(winning_trades) / total_trades if total_trades > 0 else 0
         loss_rate = len(losing_trades) / total_trades if total_trades > 0 else 0
         avg_gain = winning_trades['gains'].mean() if not winning_trades.empty else 0
@@ -69,7 +69,7 @@ class Trading:
         profit_factor = winning_trades['gains'].sum() / abs(losing_trades['gains'].sum()) if losing_trades['gains'].sum() != 0 else np.inf
 
         # Calculate alpha, beta, Sharpe ratio, etc.
-        returns = trades_df['gains'] / 100
+        returns = trades_df[trades_df['type'] == 'sell']['gains'] / 100
         risk_free_rate = 0.01  # Example risk-free rate
         excess_returns = returns - risk_free_rate / len(returns)
         sharpe_ratio = np.mean(excess_returns) / np.std(excess_returns) if np.std(excess_returns) != 0 else np.inf

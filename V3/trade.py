@@ -8,13 +8,15 @@ pd.set_option('display.width', 20000)
 
 
 timeframe = '1d'
+name="_eth"
 period = '10y'
 signal_value = 20
 SL = -5
-TS = -5
+TS = -6
+cash = 250000
 
 
-def query_signal(file_path=f'./cache/{timeframe}_extended_{period}.pkl', threshold=10):
+def query_signal(file_path=f'./cache/{timeframe}{name}_extended_{period}.pkl', threshold=10):
     try:
         # Load the extended data
         data = pd.read_pickle(file_path)
@@ -90,7 +92,7 @@ def save(items):
         item[0].to_pickle(item[1])
 
 def main():
-    file_path = f'./cache/{timeframe}_extended_{period}.pkl'
+    file_path = f'./cache/{timeframe}{name}_extended_{period}.pkl'
     filtered_data = query_signal(file_path, signal_value)
     
     if not filtered_data.empty:
@@ -108,7 +110,7 @@ def main():
 
     data = pd.read_pickle(file_path)
 
-    trader = Trading(initial_cash=50000)
+    trader = Trading(initial_cash=cash)
     positions, trades, stats, portfolio_values = trader.trade(
         symbols=symbols,
         data=data,
@@ -125,10 +127,10 @@ def main():
     print(stats)
 
     save([
-        [positions, f'./cache/_positions_{timeframe}_period.pkl'],
-        [trades, f'./cache/_trades_{timeframe}_period.pkl'],
-        [stats, f'./cache/_stats_{timeframe}_period.pkl'],
-        [portfolio_values, f'./cache/_portfolio_values_{timeframe}_period.pkl']
+        [positions, f'./cache/_positions_{timeframe}{name}_period.pkl'],
+        [trades, f'./cache/_trades_{timeframe}{name}_period.pkl'],
+        [stats, f'./cache/_stats_{timeframe}{name}_period.pkl'],
+        [portfolio_values, f'./cache/_portfolio_values_{timeframe}{name}_period.pkl']
     ])
 
 if __name__ == '__main__':
